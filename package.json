@@ -24,8 +24,5 @@
     "deploy": "forge build --root contracts && node scripts/deploy.mjs",
     "mmbacktest": "node worker/mmbacktest.js 300",
     "launch": "node scripts/launch.mjs"
-  },
-  "devDependencies": {
-    "dotenv": "^17.2.1"
   }
 }

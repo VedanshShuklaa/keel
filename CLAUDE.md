@@ -36,7 +36,6 @@ The full design is in the published Keel artifact
 (https://claude.ai/code/artifact/0c4d8cc6-af9a-4ba8-905e-b524c6108bef). Read it before
 making product decisions.
 
-`docs/nowcast.html` is a **different, superseded** project. Do not use it as the spec.
 
 ### One premise in the design doc is measured false
 

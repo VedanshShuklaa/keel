@@ -5,8 +5,6 @@ node_modules/
 contracts/out/
 contracts/cache/
 contracts/broadcast/
-frontend/.next/
-frontend/out/
 data/cache/
 .DS_Store
 cache/

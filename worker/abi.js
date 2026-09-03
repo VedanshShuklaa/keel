@@ -138,43 +138,6 @@ export const binaryPoolAbi = [
   { type: "function", name: "marketExpiryNs", stateMutability: "view", inputs: [], outputs: [{ type: "uint64" }] },
 ];
 
-export const keelFactoryAbi = [
-  { type: "function", name: "bootstrapped", stateMutability: "view", inputs: [], outputs: [{ type: "bool" }] },
-  { type: "function", name: "marketCreator", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
-  { type: "function", name: "venueId", stateMutability: "view", inputs: [], outputs: [{ type: "bytes32" }] },
-  { type: "function", name: "operatorId", stateMutability: "view", inputs: [], outputs: [{ type: "uint32" }] },
-  { type: "function", name: "launchCost", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  {
-    type: "function",
-    name: "launchCostFor",
-    stateMutability: "view",
-    inputs: [{ name: "intervalSec", type: "uint64" }],
-    outputs: [{ type: "uint256" }],
-  },
-  {
-    type: "function",
-    name: "rearm",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "seriesId", type: "uint32" }],
-    outputs: [],
-  },
-  { type: "function", name: "seriesCount", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  { type: "function", name: "creatorFloat", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  {
-    type: "function",
-    name: "launch",
-    stateMutability: "payable",
-    inputs: [
-      { name: "asset", type: "string" },
-      { name: "collateral", type: "address" },
-      { name: "numericDecimals", type: "uint64" },
-      { name: "intervalSec", type: "uint64" },
-      { name: "settlementWindow", type: "uint64" },
-    ],
-    outputs: [{ type: "uint32" }],
-  },
-];
-
 export const erc20Abi = [
   { type: "function", name: "decimals", stateMutability: "view", inputs: [], outputs: [{ type: "uint8" }] },
   {

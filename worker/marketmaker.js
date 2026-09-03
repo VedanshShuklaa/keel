@@ -1,5 +1,5 @@
 // Pure(-ish) market-maker simulator for the mintSet/burnSet Up+Down quoting
-// strategy described in docs/nowcast.html. No I/O here — everything this
+// strategy this repository set out to test. No I/O here — everything this
 // module needs (ticks, trades, strike, sigma, outcome) must already be
 // fetched by the caller (worker/mmbacktest.js). That separation is what
 // makes this file testable with hand-constructed data and no network.
