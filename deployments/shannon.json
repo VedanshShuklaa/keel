@@ -1,0 +1,22 @@
+{
+  "network": "shannon",
+  "chainId": 50312,
+  "deployedAt": "2026-09-03T06:38:55.948Z",
+  "deployer": "0x0cdF60D07589f9b989dbD4c5F1D1F961Bb7c572d",
+  "contracts": {
+    "KeelFactory": "0xb9b0d6392fc8010f13583188a7983413507444f5",
+    "KeelVault": "0x9f4d3e66b55d3395952c605eaf6c6fb960e0fd41",
+    "marketCreator": "0x1cf22755BC60ba81B40D040D80644935bF865D69",
+    "creatorPolicy": "0xc3ef21c0FAb5252B75A3C6C98E4B5D2Ace7f34f3"
+  },
+  "venueId": "0xa6897c210c76a29b3d6bf757063b10a3faa77fe0657de0ee282493e99a18ed50",
+  "operatorId": 14,
+  "protocol": {
+    "chainId": 50312,
+    "binaryModule": "0x3ecC694Cef705358864a646142ac17A90E29e388",
+    "marketsCore": "0x2802504314685D89bF6C992CA5a8e7cC78bc0294",
+    "marketCreatorFactory": "0xE6bEE93cE87c9E6e62aCb621caa7832EE47b4F6B",
+    "oracleHub": "0xe40db387cC98601Dd11bd634fF2f3AD5686dE32b",
+    "collateral": "0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E"
+  }
+}

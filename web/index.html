@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keel Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --paper: #F1F4F3;
+  --card: #FBFCFC;
+  --ink: #10171C;
+  --ink-soft: #4A5860;
+  --rule: #CBD5D2;
+  --accent: #0B6E6E;
+  --accent-soft: #DCEAE8;
+  --signal: #B2401A;
+  --good: #2F6B3C;
+  --sans: "Archivo", system-ui, -apple-system, sans-serif;
+  --serif: "Source Serif 4", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0D1315; --card: #141C1F; --ink: #E7EDEB; --ink-soft: #9BAAA8;
+    --rule: #2A363A; --accent: #4FB3AD; --accent-soft: #17302F; --signal: #E1794F; --good: #6FBF83;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0D1315; --card: #141C1F; --ink: #E7EDEB; --ink-soft: #9BAAA8;
+  --rule: #2A363A; --accent: #4FB3AD; --accent-soft: #17302F; --signal: #E1794F; --good: #6FBF83;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 16px; line-height: 1.55; }
+
+header { border-bottom: 1px solid var(--rule); padding: 26px 32px 0; }
+.masthead { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+h1 { font-family: var(--sans); font-weight: 700; font-size: 24px; letter-spacing: -0.015em; margin: 0; }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-soft); }
+header p.lede { margin: 8px 0 0; color: var(--ink-soft); font-size: 15px; max-width: 68ch; }
+
+/* The live strip: chain figures, not decoration. Reads left to right as
+   "we launched, it minted, it settled, and here is what it holds." */
+.strip { display: flex; flex-wrap: wrap; gap: 0; margin: 20px -32px 0; border-top: 1px solid var(--rule); }
+.stat { flex: 1 1 130px; padding: 12px 32px 14px; border-right: 1px solid var(--rule); }
+.stat:last-child { border-right: none; }
+.stat .k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.stat .v { font-family: var(--sans); font-size: 26px; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; letter-spacing: -0.015em; }
+.stat .v.sm { font-size: 15px; font-weight: 600; font-family: var(--mono); letter-spacing: 0; word-break: break-all; }
+
+main { display: grid; grid-template-columns: 1fr minmax(300px, 400px); gap: 0; align-items: start; }
+@media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+section { padding: 24px 32px 32px; min-width: 0; }
+#coverage { border-left: 1px solid var(--rule); }
+#coverage table { table-layout: fixed; }
+/* Fixed layout splits width evenly by default, which starved the state chip and
+   ellipsised it. Give each column what it actually needs. */
+#coverage th:nth-child(1), #coverage td:nth-child(1) { width: 32%; }
+#coverage th:nth-child(2), #coverage td:nth-child(2) { width: 30%; }
+#coverage th:nth-child(3), #coverage td:nth-child(3) { width: 16%; }
+#coverage th:nth-child(4), #coverage td:nth-child(4) { width: 22%; }
+#coverage .status { font-size: 10px; padding: 2px 5px; letter-spacing: 0.03em; }
+#coverage td, #coverage th { overflow: hidden; text-overflow: ellipsis; }
+#coverage button { padding: 4px 8px; font-size: 11px; }
+@media (max-width: 980px) { #coverage { border-left: none; border-top: 1px solid var(--rule); } }
+h2 { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 4px; }
+.sub { color: var(--ink-soft); font-size: 14px; margin: 0 0 18px; max-width: 66ch; }
+.count { font-family: var(--sans); font-size: 38px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.count small { display: block; margin-top: 6px; font-family: var(--serif); font-size: 15px; font-weight: 400; line-height: 1.4; color: var(--ink-soft); letter-spacing: 0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-align: left; font-weight: 500; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--rule); }
+td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; padding-right: 0; }
+.scroll { overflow-x: auto; min-width: 0; max-width: 100%; }
+.ticker { font-family: var(--mono); font-weight: 500; }
+button {
+  font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  background: var(--accent); color: var(--paper); border: 0; border-radius: 3px;
+  padding: 5px 11px; cursor: pointer;
+}
+button:hover { filter: brightness(1.12); }
+button:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+.window { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; margin-bottom: 14px; }
+.window.mine { border-left: 3px solid var(--accent); }
+.window h3 { font-family: var(--sans); font-size: 17px; margin: 0 0 2px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.window h3 .meta { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; font-weight: 400; }
+.legs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 14px 0 4px; }
+.leg .label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.leg .val { font-family: var(--sans); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.loadline { margin-top: 12px; }
+.loadline .track { position: relative; height: 22px; background: var(--accent-soft); border-radius: 2px; overflow: hidden; }
+.loadline .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+.loadline .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--signal); }
+.loadline .cap { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--ink-soft); margin-top: 5px; letter-spacing: 0.04em; }
+.note { font-size: 13px; color: var(--ink-soft); margin-top: 10px; }
+.plan { background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 3px; padding: 12px 14px; margin-top: 12px; font-family: var(--mono); font-size: 12px; white-space: pre-wrap; overflow-x: auto; }
+.status { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; border: 1px solid; white-space: nowrap; }
+.status.ok { color: var(--good); border-color: var(--good); }
+.status.warn { color: var(--signal); border-color: var(--signal); }
+.status.idle { color: var(--ink-soft); border-color: var(--rule); }
+footer { border-top: 1px solid var(--rule); padding: 18px 32px 40px; color: var(--ink-soft); font-size: 13px; }
+a { color: var(--accent); }
+.loading { color: var(--ink-soft); font-style: italic; }
+code { font-family: var(--mono); font-size: 0.9em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="masthead">
+    <h1>Keel</h1>
+    <span class="tag">console · shannon testnet</span>
+  </div>
+  <p class="lede">Event Contract markets that open already quoted. Keel launches series on assets nobody covers, then underwrites its own books. Every price on this page is computed by the same two modules the vault mirrors on-chain, so what you see is what the contract would enforce.</p>
+  <div class="strip" id="strip">
+    <div class="stat"><div class="k">status</div><div class="v sm loading">reading chain…</div></div>
+  </div>
+</header>
+
+<main>
+  <section id="book">
+    <h2>Keel's own book</h2>
+    <p class="sub">Series this deployment launched, and every window its roll loop has minted. These markets exist because <code>KeelFactory</code> stood up its own operator, venue and market creator — DreamDEX's venue allowlists creators, so there was no other way in.</p>
+    <div id="series-list" class="loading">reading Keel's venue…</div>
+
+    <h2 style="margin-top:30px">Live windows, priced</h2>
+    <p class="sub">For each open window: the strike reconstructed from oracle ticks, σ trained only on ticks from before the window opened, the digital's fair value, and the two asks Keel would rest. The load line is the invariant the vault enforces — both legs must sell for more than the set costs to mint.</p>
+    <div id="window-list" class="loading">loading live windows…</div>
+  </section>
+
+  <section id="coverage">
+    <h2>Coverage gap</h2>
+    <p class="sub">Every asset the Somnia oracle publishes a price for, against the ones that have ever traded an Event Contract. The gap is Keel's entire addressable surface.</p>
+    <div id="coverage-count" class="loading">measuring…</div>
+    <div class="scroll"><table id="coverage-table"></table></div>
+    <div id="launch-plan"></div>
+  </section>
+</main>
+
+<footer>
+  <span id="deployment">Not deployed yet — this console reads live chain state and prices it locally.</span>
+  · <a href="/web/index.html">reload</a>
+</footer>
+
+<script type="module" src="/web/app.js"></script>
+</body>
+</html>

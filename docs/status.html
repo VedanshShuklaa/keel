@@ -1,0 +1,736 @@
+<title>Keel Manifest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  /* ---------------------------------------------------------------
+     Keel — drafting-sheet palette. Cool paper, oxide ink, verdigris
+     accent. Oxide red is reserved for measured negatives and nothing
+     else, so a red mark on this page always means a number came back
+     against us.
+     --------------------------------------------------------------- */
+  :root {
+    --paper:      #F1F4F3;
+    --surface:    #FFFFFF;
+    --surface-2:  #E9EDEC;
+    --ink:        #10171C;
+    --ink-soft:   #4A585F;
+    --ink-faint:  #7C8A90;
+    --rule:       #C9D2D0;
+    --rule-soft:  #DEE5E3;
+    --accent:     #0B6E6E;
+    --accent-dim: #E0EEEC;
+    --signal:     #B2401A;
+    --signal-dim: #F6E5DE;
+    --good:       #2F6B3F;
+    --good-dim:   #E1EDE4;
+
+    --measure: 68ch;
+    --radius: 3px;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #0B1013;
+      --surface:    #131A1E;
+      --surface-2:  #1B2429;
+      --ink:        #E3EAE8;
+      --ink-soft:   #A0AFB4;
+      --ink-faint:  #74838A;
+      --rule:       #2B373D;
+      --rule-soft:  #202A2F;
+      --accent:     #57B8AF;
+      --accent-dim: #14312F;
+      --signal:     #E0764D;
+      --signal-dim: #33190F;
+      --good:       #6FB07E;
+      --good-dim:   #15291B;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #0B1013;
+    --surface:    #131A1E;
+    --surface-2:  #1B2429;
+    --ink:        #E3EAE8;
+    --ink-soft:   #A0AFB4;
+    --ink-faint:  #74838A;
+    --rule:       #2B373D;
+    --rule-soft:  #202A2F;
+    --accent:     #57B8AF;
+    --accent-dim: #14312F;
+    --signal:     #E0764D;
+    --signal-dim: #33190F;
+    --good:       #6FB07E;
+    --good-dim:   #15291B;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* --- masthead ------------------------------------------------- */
+
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+
+  .wordmark {
+    font-family: Archivo, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.6rem, 7vw, 4rem);
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    margin: 0;
+  }
+
+  .wordmark span { color: var(--accent); }
+
+  .thesis {
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+    max-width: 34ch;
+    margin: 0.5rem 0 0;
+    text-wrap: balance;
+  }
+
+  .vitals {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, auto));
+    gap: 0 1.75rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  .vital { display: flex; flex-direction: column; gap: 0.1rem; }
+
+  .vital dt {
+    font-size: 0.62rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .vital dd {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+  }
+
+  .vital dd small {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+
+  /* --- section scaffolding -------------------------------------- */
+
+  section { margin-top: 3.25rem; }
+
+  .sec-head {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0 2rem;
+    align-items: baseline;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+  }
+
+  .sec-kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.63rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  h2 {
+    font-family: Archivo, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .sec-body {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 1rem 2rem;
+    margin-top: 1rem;
+  }
+
+  .sec-body > .rail {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.7rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  .sec-body > .flow { min-width: 0; max-width: var(--measure); }
+
+  @media (max-width: 46rem) {
+    .sec-head, .sec-body { grid-template-columns: 1fr; gap: 0.6rem; }
+    .vitals { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1rem; }
+  }
+
+  p { margin: 0 0 0.95rem; }
+  .flow > *:last-child { margin-bottom: 0; }
+
+  a { color: var(--accent); text-underline-offset: 0.18em; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  strong { font-weight: 600; }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.86em;
+  }
+
+  p code, li code, td code {
+    background: var(--surface-2);
+    padding: 0.08em 0.32em;
+    border-radius: var(--radius);
+  }
+
+  /* --- status chips: the page's one structural device ------------ */
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.36em;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.16em 0.5em;
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+
+  .chip::before {
+    content: "";
+    width: 0.42em; height: 0.42em;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .chip.built   { color: var(--good);   background: var(--good-dim); }
+  .chip.measured{ color: var(--accent); background: var(--accent-dim); }
+  .chip.negative{ color: var(--signal); background: var(--signal-dim); }
+  .chip.planned { color: var(--ink-faint); background: var(--surface-2); }
+
+  /* --- tables ---------------------------------------------------- */
+
+  .scroll { overflow-x: auto; margin: 1.15rem 0; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.9rem 0.5rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule);
+    font-weight: 500;
+  }
+
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 0; }
+  td.num { font-weight: 500; }
+  td.neg { color: var(--signal); }
+  td.pos { color: var(--good); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .table-note {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-top: -0.3rem;
+  }
+
+  /* --- command blocks -------------------------------------------- */
+
+  .cmds {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+    margin: 1.15rem 0;
+  }
+
+  .cmd {
+    display: grid;
+    grid-template-columns: minmax(11rem, auto) 1fr;
+    gap: 0 1.25rem;
+    padding: 0.62rem 0.9rem;
+    align-items: baseline;
+  }
+
+  .cmd + .cmd { border-top: 1px solid var(--rule-soft); }
+
+  .cmd b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .cmd b::before { content: "$ "; color: var(--accent); }
+
+  .cmd span { font-size: 0.86rem; color: var(--ink-soft); }
+
+  @media (max-width: 34rem) {
+    .cmd { grid-template-columns: 1fr; gap: 0.15rem; }
+  }
+
+  /* --- inventory -------------------------------------------------- */
+
+  .inventory { display: flex; flex-direction: column; gap: 0; margin: 1.15rem 0; }
+
+  .item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .item:first-child { border-top: 1px solid var(--rule); }
+
+  .item h3 {
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+
+  .item p { grid-column: 1 / -1; margin: 0; font-size: 0.92rem; color: var(--ink-soft); max-width: var(--measure); }
+
+  /* --- the load line ---------------------------------------------- */
+
+  .loadline {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.4rem 1.1rem;
+    margin: 1.3rem 0;
+  }
+
+  .loadline figcaption {
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+    margin-top: 0.85rem;
+    max-width: 58ch;
+  }
+
+  .loadline svg { display: block; width: 100%; height: auto; max-width: 30rem; }
+
+  .callout {
+    border-left: 2px solid var(--signal);
+    background: var(--signal-dim);
+    padding: 0.85rem 1.1rem;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 1.2rem 0;
+    font-size: 0.95rem;
+  }
+
+  .callout p:last-child { margin-bottom: 0; }
+
+  ul { padding-left: 1.15rem; margin: 0 0 0.95rem; }
+  li { margin-bottom: 0.4rem; }
+  li::marker { color: var(--ink-faint); }
+
+  footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    justify-content: space-between;
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div>
+      <h1 class="wordmark">Keel<span>.</span></h1>
+      <p class="thesis">Event Contract markets that open already quoted — a launchpad whose books are never empty, because the vault that creates them is the first maker on them.</p>
+    </div>
+    <dl class="vitals">
+      <div class="vital">
+        <dt>Tests</dt>
+        <dd>183 <small>green</small></dd>
+      </div>
+      <div class="vital">
+        <dt>Contracts</dt>
+        <dd>3 <small>+12 test doubles</small></dd>
+      </div>
+      <div class="vital">
+        <dt>Live on Shannon</dt>
+        <dd>2 <small>series, settling</small></dd>
+      </div>
+      <div class="vital">
+        <dt>Submission</dt>
+        <dd>8 Sep <small>2026</small></dd>
+      </div>
+    </dl>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">The product</span>
+      <h2>Two surfaces on one engine</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail">Launch<br>Underwrite</div>
+      <div class="flow">
+        <p><strong>Launch</strong> lets anyone stand up a rolling Event Contract series for any asset the Somnia oracle already feeds. <strong>Underwrite</strong> is the vault behind it: deposit tUSDC, receive shares, and the vault manufactures complete sets and rests both sides of every window it launches.</p>
+        <p>The two are one product. A market nobody quotes is a market nobody can trade, so a launchpad that cannot also make its own markets ships an empty book. Keel's markets are born quoted.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Live measurement</span>
+      <h2>What the chain actually says</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail"><span class="chip measured">Measured</span><br><br>Shannon testnet<br>chain 50312<br>2026-09-01</div>
+      <div class="flow">
+        <p>The design doc assumed empty books and no market maker. That assumption was wrong, and finding out changed the product rather than sinking it.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Measurement</th><th class="num">Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>DreamDEX markets on the venue</td><td class="num">23,297</td></tr>
+              <tr><td>Markets that have never traded</td><td class="num">87.8%</td></tr>
+              <tr><td>Oracle-fed assets on Somnia</td><td class="num">34</td></tr>
+              <tr><td>Assets with any Event Contract</td><td class="num">2</td></tr>
+              <tr><td>Assets with none — Keel's addressable market</td><td class="num pos">30</td></tr>
+              <tr><td>Assets covered <em>because Keel listed them</em></td><td class="num pos">2</td></tr>
+              <tr><td>Brier score vs a 0.2500 flat baseline (n=1,500)</td><td class="num pos">0.1061</td></tr>
+              <tr><td>Live windows with a two-sided book</td><td class="num">all</td></tr>
+              <tr><td>Incumbent maker orders per 4-minute window</td><td class="num">400–550</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>BTC and ETH windows are contested by one fast incumbent. Everything else on the oracle has no market at all. The launchpad half is stronger than the doc claimed; the "be the first maker on BTC" half is dead.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Back-test</span>
+      <h2>A negative result, published as found</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail"><span class="chip negative">Negative</span><br><br>300 settled<br>windows<br>causal σ<br>no lookahead</div>
+      <div class="flow">
+        <p>Quoting against the incumbent on its own BTC and ETH windows loses money across every parameter tested, twice, including with the designed defences switched on.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Configuration</th><th class="num">Total PnL</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Round 1 — flat markup</td><td class="num neg">−2.7337</td></tr>
+              <tr><td>+ near-expiry widening, skew penalty</td><td class="num neg">−1.7943</td></tr>
+              <tr><td>+ leftover-leg unwind, default setting</td><td class="num neg">−1.7943</td></tr>
+              <tr><td>Unwind disabled</td><td class="num neg">−1.5058</td></tr>
+              <tr><td>Best cell of a 25-point joint sweep</td><td class="num neg">−0.3425</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">No cell reaches break-even. Defence 3 — the leftover-leg unwind the design called for — makes things worse at its default and is reported that way rather than tuned away.</p>
+        <div class="callout">
+          <p><strong>The diagnosis, measured.</strong> 122 of 271 recorded trades — <strong>45.0%</strong> — executed at or inside fair value plus 0.015: prices we could never have been crossed at. The incumbent's median implied half-spread is 0.0184 across all trades and <strong>0.0150 on Up-buys</strong>, sitting almost exactly on our own reference markup. We were filled only when we were the worst price on the book.</p>
+        </div>
+        <p>This does not measure Keel as sole maker on an unserved asset, which has no history and can only be shown live. Both things are true at once, and neither is used to discount the other. What it settles is the strategy: <strong>Keel does not compete for BTC and ETH flow. It makes the markets nobody else has made.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Safety</span>
+      <h2>The load line</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail"><span class="chip built">Built</span><br><br>SpreadPolicy.sol<br>6 fuzz<br>properties</div>
+      <div class="flow">
+        <p>Minting a complete set turns one unit of collateral into one Up and one Down at once. Together they are worth exactly one unit at settlement, however the window resolves. So if both legs are sold for more than one unit combined, the outcome cannot touch the vault — it has been paid a markup for a service rather than taking a directional bet.</p>
+
+        <figure class="loadline">
+          <svg viewBox="0 0 460 132" role="img" aria-label="A load line diagram: the par waterline at 1.000, with the quoted sum floating safely above it.">
+            <!-- hull water: everything below par is submerged, i.e. insolvent -->
+            <rect x="0" y="86" width="460" height="46" fill="var(--accent-dim)"/>
+            <line x1="0" y1="86" x2="460" y2="86" stroke="var(--accent)" stroke-width="1.5"/>
+
+            <!-- Plimsoll disc struck through by the par line -->
+            <circle cx="86" cy="86" r="17" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <line x1="58" y1="86" x2="114" y2="86" stroke="var(--accent)" stroke-width="2"/>
+
+            <!-- the safe freeboard: the quoted sum -->
+            <line x1="150" y1="44" x2="440" y2="44" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="150" y1="86" x2="440" y2="86" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="300" y1="46" x2="300" y2="84" stroke="var(--ink-soft)" stroke-width="1"/>
+            <path d="M300 46 l-3.5 6 h7 z" fill="var(--ink-soft)"/>
+            <path d="M300 84 l-3.5 -6 h7 z" fill="var(--ink-soft)"/>
+
+            <text x="150" y="34" fill="var(--ink)" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">askUp + askDown</text>
+            <text x="310" y="69" fill="var(--ink-soft)" font-family="IBM Plex Mono, monospace" font-size="11">freeboard = 2 × minSpread</text>
+            <text x="150" y="104" fill="var(--accent)" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">1.000 — par, what the set cost</text>
+            <text x="16" y="122" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace" font-size="10">INSOLVENT</text>
+          </svg>
+          <figcaption>A ship's load line marks how deep the hull may safely sit. Keel's is <code>askUp + askDown ≥ 1 + 2·minSpread</code>, enforced in Solidity on every quote and asserted by four fuzz properties. A quote that breaks it is one that can lose money even when everything goes right, so the vault rejects it — including when the off-chain quoter asks for it.</figcaption>
+        </figure>
+
+        <p>Three consequences fall out of that, and each removes a class of attack rather than mitigating it:</p>
+        <ul>
+          <li><strong>Prices are computed on-chain, not accepted.</strong> The hot key supplies a fair value and a size; the contract decides the prices. A stolen quoter key can quote badly. It cannot quote at a structural loss, and it cannot withdraw at all.</li>
+          <li><strong>Share price is struck only when the vault is flat.</strong> Anything markable is gameable, so the vault runs in epochs and refuses to strike a price while any order or position is open. There is no mark to attack because there is no mark.</li>
+          <li><strong>The exit never touches the operator.</strong> Orders die at the window's own expiry, expired escrow is reclaimable by anyone, settled positions are redeemable by anyone, and rolling the epoch is permissionless. If the quoter key goes dark, a depositor waits out one window and drives the whole exit themselves — a path with its own test.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Inventory</span>
+      <h2>What exists and what it does</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail">Every path is<br>real and every<br>status is what<br>the suite says.</div>
+      <div class="flow">
+        <div class="inventory">
+
+          <div class="item">
+            <h3>contracts/src/KeelVault.sol</h3>
+            <span class="chip built">Built</span>
+            <p>The underwriting vault. Epoch-based deposits and redemptions, on-chain quote construction, complete-set mint and burn, order placement and cancellation, settlement redemption, and a capped high-water-mark performance fee paid in shares. Pool provenance is read from the module, never from the pool — a security review found that trusting the pool turned the hot quoter key into a withdrawal key. Dead shares close the two-roll share-inflation attack the epoch design does <em>not</em> close on its own. 36 tests.</p>
+          </div>
+
+          <div class="item">
+            <h3>contracts/src/KeelFactory.sol</h3>
+            <span class="chip built">Built</span>
+            <p>Keel's control plane. Registers its own operator, creates its own venue, mints its own market creator and allowlists it — one transaction or none, because a half-run leaves a venue that reads as live and refuses every roll. Launching is permissionless but priced at the oracle reserve the series will spend, so a launch buys a runway rather than one window. Series ids are allocated here and never reused. Launching is priced per unit of runway rather than per roll, so a fast-cadence series cannot starve the shared creator float. <code>rearm</code> restarts a series whose roll loop has stranded. 38 tests.</p>
+          </div>
+
+          <div class="item">
+            <h3>contracts/src/lib/SpreadPolicy.sol</h3>
+            <span class="chip built">Built</span>
+            <p>Fair value plus state in, two ask prices out. Near-expiry widening scaled as √(refTau/τ), a skew penalty on the side the vault is already long, and the solvency invariant. 24 tests including six fuzz properties.</p>
+          </div>
+
+          <div class="item">
+            <h3>contracts/src/interfaces/</h3>
+            <span class="chip built">Built</span>
+            <p>DreamDEX's BinaryPool, the ERC-6909 outcome singleton, settlement and the markets module. Every signature and selector verified against SDK source and live calls, not guessed.</p>
+          </div>
+
+          <div class="item">
+            <h3>contracts/test/mocks/</h3>
+            <span class="chip built">Built</span>
+            <p>A BinaryPool faithful to the parts Keel depends on — outcome-token escrow on resting sells, best-effort cancellation, lazy expiry, and prices always in Up terms including for the order that sells Down. Plus a settlement, a market, a module and a 6-decimal collateral token.</p>
+          </div>
+
+          <div class="item">
+            <h3>worker/pricer.js</h3>
+            <span class="chip built">Built</span>
+            <p>Pure math, no I/O. The digital-option pricer <code>P(Up) = Φ((S−K)/(σ·S·√τ))</code> and per-second volatility as RMS log-return. Runs identically in the browser and the back-test.</p>
+          </div>
+
+          <div class="item">
+            <h3>worker/spreadPolicy.js</h3>
+            <span class="chip built">Built</span>
+            <p>A line-for-line mirror of the Solidity policy, tested against the contract's own reference values so the simulation and the chain cannot silently drift apart.</p>
+          </div>
+
+          <div class="item">
+            <h3>worker/marketmaker.js · mmbacktest.js</h3>
+            <span class="chip measured">Measured</span>
+            <p>Honest fill modelling against recorded trades: we are filled only when a real trade crossed our resting price. Caches its market pull so a re-run reproduces the same numbers.</p>
+          </div>
+
+          <div class="item">
+            <h3>worker/backtest.js</h3>
+            <span class="chip measured">Measured</span>
+            <p>Scores the pricing model's Brier score against a flat-0.5 baseline on settled windows, training σ strictly on ticks before each window opens.</p>
+          </div>
+
+          <div class="item">
+            <h3>worker/quoter.js</h3>
+            <span class="chip built">Built</span>
+            <p>The live loop. Its deciding half is a pure function — every rail that stops a losing quote lives there, where it is tested: an expiry floor, a stale-tick cutoff that cancels rather than widens, requote hysteresis so the loop does not churn queue position for nothing, and a notional ceiling. The live send path is wired: register, mint sets, quote, settle and reclaim, each simulated before it is sent. 85 Node tests.</p>
+          </div>
+
+          <div class="item">
+            <h3>web/ · the console</h3>
+            <span class="chip built">Built</span>
+            <p>Imports the pricer and the spread policy straight out of <code>worker/</code> rather than reimplementing them, so the prices on screen are the ones the contract would enforce. Shows the live coverage gap with a launch plan per uncovered asset, and every open window priced with its load line.</p>
+          </div>
+
+          <div class="item">
+            <h3>scripts/deploy.mjs</h3>
+            <span class="chip built">Built</span>
+            <p>Factory, bootstrap, vault, in that order, with the addresses written to <code>deployments/</code>. Prints the plan and stops unless <code>--confirm</code> is passed. Checks <code>receipt.status === "success"</code> — it is viem's string union, so comparing it to 1 reads every failure as a success.</p>
+          </div>
+
+          <div class="item">
+            <h3>README.md</h3>
+            <span class="chip built">Built</span>
+            <p>The measured problem, the two surfaces, the invariant, and the negative result stated as found rather than buried.</p>
+          </div>
+
+          <div class="item">
+            <h3>scripts/doctor.mjs</h3>
+            <span class="chip built">Built</span>
+            <p>Checks Node, Foundry, dependencies, key format, chain id, both GraphQL services and per-wallet gas — then prints the exact fix line for anything that failed. Never prints key material.</p>
+          </div>
+
+          <div class="item">
+            <h3>scripts/chainstate.mjs</h3>
+            <span class="chip built">Built</span>
+            <p>Regenerates the live evidence above. Paginates properly: a single large query silently truncates and understates every total.</p>
+          </div>
+
+          <div class="item">
+            <h3>docs/SECURITY.md</h3>
+            <span class="chip built">Built</span>
+            <p>Roles, and nineteen threats each tagged built, planned or accepted — including two criticals an adversarial review found in the vault, both now closed and both covered by a test that runs the attack.</p>
+          </div>
+
+          <div class="item">
+            <h3>docs/SDK-0.29.0-VERIFIED.md</h3>
+            <span class="chip built">Built</span>
+            <p>Every JS SDK call mapped to its on-chain function and selector, with file-and-line citations, plus four corrections to claims in the original design.</p>
+          </div>
+
+          <div class="item">
+            <h3>Deployed on Shannon</h3>
+            <span class="chip built">Measured</span>
+            <p>Keel's own operator, venue, market creator and allowlist are live. Factory <code>0x4ca5f326…f10</code>, vault <code>0x65e09b7c…d09</code>. Two series launched; their windows were minted by Keel's own creator and settled by the Somnia oracle untouched. SOL and SOMI are now covered assets that were not before.</p>
+          </div>
+
+          <div class="item">
+            <h3>Vault deposit and redeem in the console</h3>
+            <span class="chip planned">Next</span>
+            <p>Wallet connect and the epoch queue made visible: what is queued, the price it will strike at, and what can be claimed. The CLI does this today; the browser does not.</p>
+          </div>
+
+          <div class="item">
+            <h3>Demo recording</h3>
+            <span class="chip planned">Next</span>
+            <p>The 90-second cut: the coverage gap, a series launched from the console, and the first window opening with both sides already quoted.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Operation</span>
+      <h2>How to run it</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail">Node 20+<br>Foundry<br>No wallet<br>needed</div>
+      <div class="flow">
+        <p>From a fresh clone, two commands get to a green suite. Nothing below needs a private key, testnet funds, or a network connection except where noted.</p>
+        <div class="cmds">
+          <div class="cmd"><b>npm run setup</b><span>Installs Node packages, clones pinned Solidity dependencies, creates <code>.env</code>, then runs the doctor. Safe to re-run.</span></div>
+          <div class="cmd"><b>npm test</b><span>The whole suite — 85 Node tests and 98 Foundry tests, in about a second.</span></div>
+          <div class="cmd"><b>npm run doctor</b><span>Checks the environment and prints an exact fix line for anything wrong.</span></div>
+          <div class="cmd"><b>npm run chainstate</b><span>Regenerates the live market-structure evidence. Network, no wallet.</span></div>
+          <div class="cmd"><b>npm run backtest</b><span>Scores the pricing model against settled windows. Network, no wallet, slow.</span></div>
+          <div class="cmd"><b>npm run mmbacktest</b><span>Reproduces the market-making result in the table above.</span></div>
+          <div class="cmd"><b>npm run web</b><span>The console at <code>localhost:5173</code> — live coverage gap and live pricing, no build step.</span></div>
+          <div class="cmd"><b>npm run quote</b><span>The quoter loop. Dry run by default: it prints what it would rest and sends nothing.</span></div>
+          <div class="cmd"><b>npm run deploy</b><span>Prints the deployment plan and stops. Add <code>-- --confirm</code> to send it; needs a funded key.</span></div>
+        </div>
+        <p>Solidity dependencies are cloned at pinned tags rather than committed, so the repository stays small and a green run stays reproducible.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-kicker">Open items</span>
+      <h2>What is needed, and from whom</h2>
+    </div>
+    <div class="sec-body">
+      <div class="rail"><span class="chip planned">Blocking<br>day 4</span></div>
+      <div class="flow">
+        <p>Everything above runs today without any of this. The list below unblocks sending real transactions.</p>
+        <ul>
+          <li><strong>Two throwaway private keys</strong> in <code>.env</code>. Never committed, never printed.</li>
+          <li><strong>Roughly 50 STT of gas.</strong> The faucet gives about 0.5 per claim, so a sponsor grant is the practical route.</li>
+          <li><strong>tUSDC on both addresses</strong>, claimable from the token's own faucet.</li>
+          <li><strong>One sponsor question:</strong> is <code>resolveReserve</code> released back to the creator at resolution? It is 0.2 STT per market created, earmarked at bind — float rather than burn if it comes back.</li>
+        </ul>
+        <p>Worth knowing: the 32 STT bond applies to the shared OracleHub, not to us. It is live-verified funded at 192.91 STT under subscription 7506826. Because Keel must run its own venue anyway, it also sets its own maker and taker fees — so the fee revenue line survives even though DreamDEX's builder-fee mechanism is hard-zeroed on testnet.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Keel — Somnia × DreamDEX Event Contracts Hackathon</span>
+    <span>docs/status.html · regenerate this page whenever the repository changes</span>
+  </footer>
+
+</div>

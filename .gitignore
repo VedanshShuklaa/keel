@@ -1,0 +1,21 @@
+node_modules/
+.env
+.env.local
+*.log
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+frontend/.next/
+frontend/out/
+data/cache/
+.DS_Store
+cache/
+data/*.json
+
+# Solidity dependencies are vendored by clone at pinned tags (scripts/setup.mjs),
+# not committed. They carry their own .git, so tracking them here would record
+# broken gitlinks that make a fresh clone fail to build.
+contracts/lib/
+
+# Local CodeGraph index — 32MB of machine-specific state.
+.codegraph/

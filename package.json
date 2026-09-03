@@ -1,0 +1,31 @@
+{
+  "name": "keel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Keel — Event Contract markets that open already quoted. Somnia x DreamDEX hackathon entry.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "worker"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "test": "npm run test:unit && npm run test:contracts",
+    "test:unit": "node --test \"worker/test/*.test.js\"",
+    "test:contracts": "forge test --root contracts",
+    "backtest": "node worker/backtest.js",
+    "chainstate": "node scripts/chainstate.mjs",
+    "web": "node scripts/serve.mjs",
+    "quote": "node worker/quoter.js",
+    "deploy": "forge build --root contracts && node scripts/deploy.mjs",
+    "mmbacktest": "node worker/mmbacktest.js 300",
+    "launch": "node scripts/launch.mjs"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.1"
+  }
+}

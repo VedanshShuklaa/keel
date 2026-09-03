@@ -1,0 +1,11 @@
+{
+  "name": "@keel/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "pricer.js",
+  "dependencies": {
+    "@somnia-chain/markets-sdk": "^0.29.0",
+    "viem": "^2.56.0"
+  }
+}

@@ -1,0 +1,829 @@
+<title>Nowcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+:root{
+  --ground:#EEF1F1;
+  --surface:#FAFBFB;
+  --sunk:#E3E8E8;
+  --ink:#141C1E;
+  --ink-2:#40514F;
+  --ink-3:#69797A;
+  --rule:#CFD8D8;
+  --rule-soft:#DFE6E6;
+  --up:#0E8C7F;
+  --up-soft:#0E8C7F1F;
+  --down:#A8386B;
+  --down-soft:#A8386B1A;
+  --signal:#B4801C;
+  --signal-soft:#D99A2B26;
+  --warn:#B4462F;
+
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+
+  --measure:68ch;
+  --pad:clamp(1.1rem,4vw,2.5rem);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1315;
+    --surface:#131B1D;
+    --sunk:#0A0F11;
+    --ink:#E4EBEA;
+    --ink-2:#AFBEBD;
+    --ink-3:#7D8F8E;
+    --rule:#263335;
+    --rule-soft:#1C2628;
+    --up:#3FBFAE;
+    --up-soft:#3FBFAE22;
+    --down:#E0759F;
+    --down-soft:#E0759F1E;
+    --signal:#E0AC4A;
+    --signal-soft:#E0AC4A24;
+    --warn:#E2765A;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1315;
+  --surface:#131B1D;
+  --sunk:#0A0F11;
+  --ink:#E4EBEA;
+  --ink-2:#AFBEBD;
+  --ink-3:#7D8F8E;
+  --rule:#263335;
+  --rule-soft:#1C2628;
+  --up:#3FBFAE;
+  --up-soft:#3FBFAE22;
+  --down:#E0759F;
+  --down-soft:#E0759F1E;
+  --signal:#E0AC4A;
+  --signal-soft:#E0AC4A24;
+  --warn:#E2765A;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--pad) 6rem}
+
+.mast{
+  border-bottom:1px solid var(--rule);
+  padding:clamp(2.5rem,7vw,4.5rem) 0 1.6rem;
+  margin-bottom:2.6rem;
+}
+.kicker{
+  font-family:var(--f-display);font-size:.7rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-bottom:1.4rem;
+}
+.kicker b{color:var(--signal);font-weight:700}
+h1{
+  font-family:var(--f-display);font-weight:800;
+  font-size:clamp(2.6rem,8vw,5rem);line-height:.94;letter-spacing:-.035em;
+  margin:0 0 .6rem;text-wrap:balance;
+}
+h1 span{color:var(--ink-3);font-weight:500}
+.dek{
+  font-size:clamp(1.05rem,2.3vw,1.3rem);color:var(--ink-2);
+  max-width:60ch;margin:0 0 1.8rem;
+}
+.mast-meta{
+  display:flex;flex-wrap:wrap;gap:.55rem;
+  font-family:var(--f-mono);font-size:.72rem;
+}
+.chip{
+  border:1px solid var(--rule);border-radius:2px;padding:.28rem .55rem;
+  color:var(--ink-3);background:var(--surface);
+}
+.chip.ok{color:var(--up);border-color:var(--up);background:var(--up-soft)}
+
+section{margin:0 0 4.5rem;scroll-margin-top:1rem}
+.sec-head{
+  display:grid;grid-template-columns:3.2rem 1fr;gap:0 1rem;
+  align-items:baseline;border-top:2px solid var(--ink);
+  padding-top:.7rem;margin-bottom:1.6rem;
+}
+.sec-num{
+  font-family:var(--f-mono);font-size:.78rem;font-weight:600;
+  color:var(--signal);letter-spacing:.02em;
+}
+h2{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(1.5rem,3.6vw,2.1rem);line-height:1.1;letter-spacing:-.02em;
+  margin:0;text-wrap:balance;
+}
+.sec-sub{grid-column:2;font-size:.95rem;color:var(--ink-3);margin:.35rem 0 0;max-width:62ch}
+h3{
+  font-family:var(--f-display);font-weight:700;font-size:1.02rem;
+  letter-spacing:-.005em;margin:2.2rem 0 .55rem;color:var(--ink);
+}
+h4{
+  font-family:var(--f-display);font-weight:600;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+  margin:1.6rem 0 .5rem;
+}
+p{margin:0 0 1rem;max-width:var(--measure)}
+ul,ol{margin:0 0 1rem;padding-left:1.15rem;max-width:var(--measure)}
+li{margin:0 0 .42rem}
+li::marker{color:var(--ink-3)}
+a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--signal);text-underline-offset:2px}
+a:hover{color:var(--signal)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+strong{font-weight:600}
+code,.mono{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:.08em .32em;border-radius:2px;word-break:break-word}
+.lede{font-size:1.1rem;color:var(--ink-2)}
+
+.block{
+  background:var(--surface);border:1px solid var(--rule-soft);
+  border-radius:3px;padding:1.2rem 1.3rem;margin:1.5rem 0;
+}
+.block > :last-child{margin-bottom:0}
+.block.flag{border-left:3px solid var(--warn)}
+.block.win{border-left:3px solid var(--signal)}
+.block.note{border-left:3px solid var(--up)}
+
+.scroller{overflow-x:auto;margin:1.5rem 0;border:1px solid var(--rule-soft);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:640px}
+caption{
+  caption-side:top;text-align:left;font-family:var(--f-display);
+  font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);padding:.85rem 1rem .1rem;
+}
+th,td{padding:.6rem .85rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule-soft)}
+th{
+  font-family:var(--f-display);font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+td.mn{font-family:var(--f-mono);font-size:.78rem;word-break:break-all}
+
+.pbar{position:relative;height:9px;background:var(--sunk);border-radius:1px;min-width:110px;overflow:hidden}
+.pbar i{position:absolute;inset:0 auto 0 0;background:var(--up);display:block}
+.pbar.lo i{background:var(--ink-3)}
+.pbar.hi i{background:var(--signal)}
+.pbar::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,transparent 0 19.6%,var(--ground) 19.6% 20%);
+  opacity:.55;
+}
+.scorecell{display:flex;align-items:center;gap:.55rem}
+.scorecell span{font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink-2);min-width:2.2rem;text-align:right}
+
+.ideas{display:grid;gap:1rem;margin:1.6rem 0}
+.idea{
+  border:1px solid var(--rule-soft);border-radius:3px;background:var(--surface);
+  padding:1.15rem 1.25rem;display:grid;gap:.55rem;
+}
+.idea.pick{border-color:var(--signal);background:var(--signal-soft)}
+.idea-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem}
+.idea-id{font-family:var(--f-mono);font-size:.75rem;font-weight:600;color:var(--signal)}
+.idea-name{font-family:var(--f-display);font-weight:700;font-size:1.08rem;letter-spacing:-.01em}
+.idea-tag{
+  font-family:var(--f-display);font-size:.63rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);border:1px solid var(--rule);
+  padding:.15rem .4rem;border-radius:2px;
+}
+.idea p{margin:0;font-size:.95rem;max-width:none}
+.idea dl{display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem;margin:.3rem 0 0;font-size:.88rem}
+.idea dt{font-family:var(--f-display);font-size:.63rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);padding-top:.28em}
+.idea dd{margin:0;color:var(--ink-2)}
+
+figure{margin:1.8rem 0;padding:0}
+.chart{
+  background:var(--surface);border:1px solid var(--rule-soft);border-radius:3px;
+  padding:1.2rem 1rem .8rem;overflow-x:auto;
+}
+.chart svg{display:block;width:100%;min-width:520px;height:auto}
+figcaption{font-size:.85rem;color:var(--ink-3);margin-top:.6rem;max-width:var(--measure)}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;font-family:var(--f-mono);font-size:.72rem;margin:.7rem 0 0;color:var(--ink-2)}
+.legend b{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:.4rem;border-radius:2px}
+
+.plan{display:grid;gap:0;margin:1.6rem 0;border-top:1px solid var(--rule)}
+.day{
+  display:grid;grid-template-columns:6.5rem 1fr;gap:0 1.1rem;
+  padding:.85rem 0;border-bottom:1px solid var(--rule-soft);
+}
+.day-label{font-family:var(--f-mono);font-size:.76rem;font-weight:600;color:var(--signal);padding-top:.1em}
+.day-body h5{font-family:var(--f-display);font-size:.95rem;font-weight:700;margin:0 0 .25rem}
+.day-body p{margin:0;font-size:.92rem;color:var(--ink-2);max-width:58ch}
+.gate{color:var(--warn);font-family:var(--f-display);font-size:.63rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-left:.4rem}
+
+details{border:1px solid var(--rule-soft);border-radius:3px;background:var(--surface);padding:.7rem 1rem;margin:1rem 0}
+summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:.9rem}
+details[open] summary{margin-bottom:.7rem;color:var(--signal)}
+.two{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:820px){.two{grid-template-columns:1fr 1fr}}
+.stat-row{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:1.5rem 0}
+.stat{border:1px solid var(--rule-soft);border-radius:3px;background:var(--surface);padding:.85rem .95rem}
+.stat b{display:block;font-family:var(--f-mono);font-size:1.35rem;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat i{display:block;font-style:normal;font-family:var(--f-display);font-size:.66rem;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-top:.3rem}
+.stat.up b{color:var(--up)}
+.stat.dn b{color:var(--warn)}
+footer{border-top:2px solid var(--ink);padding-top:1.2rem;margin-top:4rem;font-size:.85rem;color:var(--ink-3)}
+@media(prefers-reduced-motion:no-preference){
+  .idea{transition:border-color .15s ease}
+}
+@media(min-width:960px){
+  .sec-head{grid-template-columns:4.5rem 1fr}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="kicker">
+    <span>Somnia &times; DreamDEX Event Contracts Hackathon</span>
+    <span>Submissions 25 Aug &ndash; 8 Sep 2026</span>
+    <span><b>$5,000 USDso</b></span>
+  </div>
+  <h1>Nowcast</h1>
+  <p class="dek">The retail cockpit for 15-minute crypto. It prices every Up/Down window against a live volatility model, automates entry and exit on-chain, and keeps the book quoted so there is always something to trade against.</p>
+  <div class="mast-meta">
+    <span class="chip ok">Testnet verified live</span>
+    <span class="chip">markets-sdk 0.28.1</span>
+    <span class="chip">Shannon &middot; chain 50312</span>
+    <span class="chip">5 ideas scored &middot; 1 recommended</span>
+  </div>
+</header>
+
+<section id="s0">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <div>
+      <h2>The one-paragraph version</h2>
+      <p class="sec-sub">If you read nothing else.</p>
+    </div>
+  </div>
+
+  <p class="lede">DreamDEX Event Contracts are not general prediction markets. They are <strong>ultra-short-dated binary options on BTC and ETH</strong> &mdash; rolling 15-minute, 1-hour, 4-hour and 24-hour windows that settle against the price at which the window opened. That makes them mathematically pricable: a contract's fair value is a digital-option probability driven by distance-from-strike and remaining volatility. Nobody in the prediction-market sector shows a retail trader that number at the moment of trade, and nobody offers stop-loss or take-profit on a short-window binary. Somnia is the one chain where both can ship without a keeper server, because the reactivity precompile lets a contract react to on-chain events by itself. Build the cockpit that shows fair value live, automates the exit, and quotes both sides of the book so it is never empty.</p>
+
+  <div class="block win">
+    <h4>Why this shape fits the rubric</h4>
+    <p>The scoring is 60% non-technical &mdash; Innovation 20, UX &amp; Design 20, Business &amp; Ecosystem 20 &mdash; against 25% Technical and 15% Demo. Somnia's own previous hackathon judged on exactly two axes: <em>Technical Excellence using the SDK</em> and <em>Real-Time UX</em>. A visibly live, well-priced consumer surface built deeply on the SDK hits all of those. Another trading bot does not: the sponsor already ships a bot kit, has run two bot competitions, and publishes eight example bots.</p>
+  </div>
+</section>
+
+<section id="s1">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <div>
+      <h2>What the primitive actually is</h2>
+      <p class="sec-sub">Read from the docs, then confirmed against the live chain.</p>
+    </div>
+  </div>
+
+  <p>An Event Contract is a binary claim on a price window. Each market has an asset, a duration, and a strike that is simply <strong>the price at which the window opened</strong> &mdash; there are no preset strike ladders. If the settlement price is at or above the open, Up wins; below it, Down wins. A winning contract pays exactly 1 unit of collateral. Prices trade between 0 and 1 and read directly as implied probability.</p>
+
+  <div class="scroller">
+    <table>
+      <caption>Mechanics that shape the product</caption>
+      <thead><tr><th>Property</th><th>Reality</th><th>What it means for a build</th></tr></thead>
+      <tbody>
+        <tr><td>Venue</td><td>On-chain CLOB, one book quoted in Up terms; Down price is <code>1 &minus; Up</code></td><td>One book, four sides: <code>BUY_YES</code>, <code>SELL_YES</code>, <code>BUY_NO</code>, <code>SELL_NO</code></td></tr>
+        <tr><td>Positions</td><td>ERC-6909 token IDs on one shared singleton, not per-market ERC-20s</td><td>No wallet renders them. You must build the position UI &mdash; an opportunity, not a chore</td></tr>
+        <tr><td>Liquidity paths</td><td>Direct swap, plus <strong>mint-a-pair</strong> (two opposite buyers cross with no seller) and burn-a-pair</td><td>You can bootstrap a book from zero inventory. This is the cold-start escape hatch</td></tr>
+        <tr><td>Complete sets</td><td><code>mintSet</code> / <code>burnSet</code>: 1 collateral &rlarr; 1 Up + 1 Down</td><td>Free two-sided inventory for a quoter</td></tr>
+        <tr><td>Fees</td><td>Zero entry, zero settlement, zero cut of winnings</td><td>No fee modelling needed. Margin comes from builder fees, not the venue</td></tr>
+        <tr><td>Settlement</td><td>Multi-source oracle, delivered to the hub by Somnia reactivity; <code>pokeOracle</code> and <code>voidExpired</code> as permissionless backstops</td><td>A void pays 0.5/0.5 both sides. Never stake a live demo on one specific window resolving on camera</td></tr>
+        <tr><td>Payout</td><td>Winnings are <strong>claimed, not received</strong> &mdash; you must call <code>redeem</code></td><td>Users will leave money unclaimed. Auto-claim is a real feature, not a nicety</td></tr>
+        <tr><td>Pools</td><td>Recycled across windows</td><td>Key every piece of state by <code>marketId</code>, never by pool address</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <div>
+      <h2>The stack you actually get</h2>
+      <p class="sec-sub">I installed the SDK and read its type definitions rather than trusting the docs.</p>
+    </div>
+  </div>
+
+  <p><code>@somnia-chain/markets-sdk</code> at <strong>0.28.1</strong> is far richer than the documentation suggests. It hydrates an Envio/Hasura snapshot, then materialises every subsequent block &mdash; including the resting order book &mdash; from chain logs into a local reactive store. Reads after hydration are effectively zero round-trip. Peer dependencies are <code>viem ^2</code>, optional <code>react &gt;=18</code>, optional <code>@somnia-chain/reactivity ^0.2.1</code>.</p>
+
+  <h3>Five capabilities most entrants will not find</h3>
+
+  <h4>1 &middot; First-class React hooks</h4>
+  <p>A <code>/react</code> entry point ships <code>SomniaMarketsProvider</code> plus roughly thirty hooks, including <code>useLiveBinaryOrderBook</code>, <code>useLiveMarkets</code>, <code>useLivePriceTicks</code>, <code>useLiveUserOrders</code>, <code>usePortfolio</code> and a raw <code>useIndexerQuery</code>. A genuinely live trading surface is close to a same-day build. This is the single biggest reason a polished consumer front-end is achievable in two weeks.</p>
+
+  <h4>2 &middot; A full portfolio and P&amp;L engine</h4>
+  <p><code>getPortfolio(account)</code> returns positions, open orders and recent fills &mdash; each fill carrying counterparty, maker/taker flag and price. <code>getOpenPositionsWithPnL</code> and <code>getBinaryPositionPnL</code> run an average-cost engine for you. Leaderboards, whale flow, copy-trading and tax exports are all one query away.</p>
+
+  <h4>3 &middot; Operator approval &mdash; the session-key model</h4>
+  <p>A user calls <code>setOperatorApprovalGlobal(operator, selectors, true)</code> once and your backend key can then place, cancel and reduce orders <em>owned by and settling to the user</em>. Three independent selectors: <code>placeOrderFor</code> <code>0x80054449</code>, <code>cancelOrderFor</code> <code>0xe37b444b</code>, <code>reduceOrderFor</code> <code>0x364c2587</code>. The contract enforces that an operator can never move funds. This is how a consumer app trades on someone's behalf without custody &mdash; and how you deliver automation with no wallet popup per action.</p>
+
+  <h4>4 &middot; Builder fees &mdash; a real revenue model</h4>
+  <p><code>approveBuilder</code>, <code>getEffectiveBuilderApproval</code>, <code>getMaxBuilderFeeBpsTimes1k</code>. An app attaches a builder address to the orders it routes and accrues a fee per pool per token, withdrawable by the builder wallet. On a zero-fee venue this is the sanctioned way for a front-end to earn. Say it out loud in the pitch: it turns "nice demo" into "business model".</p>
+
+  <h4>5 &middot; Permissionless venue and series creation</h4>
+  <p><code>registerOperator</code> &rarr; <code>createVenue(BINARY_V1, feeParams)</code> &rarr; <code>createMarketCreator</code> &rarr; <code>registerSeries({asset, intervalSec, settlementWindow, collateral})</code> &rarr; <code>armFirstRoll</code>. The series then rolls itself forever using reactivity callbacks whose gas you prepay via <code>setReactivityGasParams</code>. <code>intervalSec</code> floors at 60. On testnet I can see five distinct MarketCreators owned by different addresses and six separate binary venues, so this path is live and in use.</p>
+
+  <div class="block flag">
+    <h4>Two documentation gaps worth writing up</h4>
+    <p>The HTTP and WebSocket APIs cover <strong>spot only</strong> &mdash; there are no event-contract endpoints, so every EC integration must go through the SDK, the Hasura indexer or raw chain reads. And the Operators &amp; Session Keys page lives under Spot and never states whether operator approval applies to binary pools, although the pool ABI is shared. The submission guidelines invite an optional <em>feedback report on the SDK and documentation</em>. These two findings, plus the reverted-receipt trap below, make that report substantive rather than performative &mdash; and sponsors remember the team that files a useful one.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <div>
+      <h2>What the live testnet actually looks like</h2>
+      <p class="sec-sub">Measured against Shannon on 23 August 2026, not quoted from marketing.</p>
+    </div>
+  </div>
+
+  <p>This is the part no competing submission will have. I connected to the production testnet indexer, RPC and price oracle and measured the venue directly. Several findings change what is worth building.</p>
+
+  <div class="stat-row">
+    <div class="stat"><b>88 ms</b><i>Measured block time</i></div>
+    <div class="stat"><b>1.1 s</b><i>Oracle tick interval</i></div>
+    <div class="stat dn"><b>2 of 27</b><i>Assets with event contracts</i></div>
+    <div class="stat up"><b>400 / 400</b><i>Past windows resolved, 0 voids</i></div>
+  </div>
+
+  <h3>Finding 1 &mdash; the oracle feeds 27 assets; event contracts exist for 2</h3>
+  <p>The testnet price feed publishes spot and EMA for <span class="mono">AAVE, ADA, ASTER, AVAX, BNB, BTC, DOGE, ENA, ETH, FIL, HYPE, LINK, LTC, NEAR, ONDO, PEPE, PUMP, SOL, SOMI, SUI, TAO, UNI, WLD, XLM, XMR, XRP, ZEC</span>. DreamDEX runs Event Contracts on BTC and ETH. Twenty-five oracle-ready assets have no market. That is a concrete, verifiable expansion story for a pitch deck, and it makes the launchpad idea real rather than hypothetical.</p>
+
+  <h3>Finding 2 &mdash; the books are thin and intermittent, not deep</h3>
+  <p>Across all six binary venues, repeated order-book snapshots came back with zero resting levels on most markets. Fills <em>do</em> happen &mdash; I caught live crossings at 0.861, 0.913 and 0.951 seconds after they printed, all <code>DIRECT_YES</code>, one active taker against several makers &mdash; but quoting is episodic, because orders carry a mandatory expiry and makers requote on a loop. Of the first fifty live markets on the DreamDEX venue, only two had ever printed a price.</p>
+  <div class="block flag">
+    <p><strong>This is the single biggest demo risk and the single biggest product opportunity.</strong> Judges penalise projects that need real liquidity to look interesting, because a hollow book on camera reads as a hollow product. Any submission here must either bring its own liquidity or be designed so it needs none. The recommended build does both.</p>
+  </div>
+
+  <h3>Finding 3 &mdash; the fastest real window is 15 minutes</h3>
+  <p>The DreamDEX venue lists 1m and 5m markets, but their expiries are roughly sixteen days in the past and they are stuck in <code>Trading</code> &mdash; abandoned test artefacts. The series that genuinely roll are <strong>15m, 1h, 4h and 24h</strong>. Every one of the last 400 settled: 302 at 15m, 76 at 1h, 20 at 4h, 2 at 24h, with zero voids. The directional split across 300 recent windows was 156 Up to 144 Down, consistent with a near coin flip plus the small tilt the "at or above" tie-break gives Up.</p>
+  <p>Fifteen minutes is too long to show a full open&rarr;trade&rarr;settle&rarr;claim cycle in real time. Registering your own <strong>60-second series</strong> via <code>registerSeries</code> turns that into a live lap you can film. It is a demo necessity that doubles as an originality point.</p>
+
+  <h3>Finding 4 &mdash; testnet funding is trivial, except gas</h3>
+  <p>The tUSDC collateral at <span class="mono">0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E</span> exposes a <strong>public <code>faucet(uint256)</code></strong> &mdash; I confirmed it simulates cleanly from an arbitrary address &mdash; and the SDK wraps it as <code>exchange.trader.faucet()</code>. Collateral is a solved problem. STT gas is the constrained resource: the official faucet dispenses roughly 0.5 STT per claim.</p>
+
+  <h3>Finding 5 &mdash; the volatility model is computable and the numbers are clean</h3>
+  <p>Pulling 1,000 oracle ticks for BTC (about 18 minutes of history, one tick every 1.1 seconds) and taking the root-mean-square log return gives a per-second volatility of <strong>7.03 &times; 10<sup>&minus;5</sup></strong>. Scaled by &radic;&tau;:</p>
+  <div class="scroller">
+    <table>
+      <caption>Realised BTC volatility by window, spot $77,898</caption>
+      <thead><tr><th>Window</th><th class="num">&sigma; over window</th><th class="num">One standard-deviation move</th></tr></thead>
+      <tbody>
+        <tr><td>60 s</td><td class="num">0.054%</td><td class="num">$42</td></tr>
+        <tr><td>15 min</td><td class="num">0.211%</td><td class="num">$164</td></tr>
+        <tr><td>1 hour</td><td class="num">0.422%</td><td class="num">$329</td></tr>
+        <tr><td>4 hours</td><td class="num">0.844%</td><td class="num">$657</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>That is everything needed to price the contract. Section 07 turns it into a product.</p>
+
+  <details>
+    <summary>Verified constants &mdash; copy these into your config</summary>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Key</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Chain</td><td class="mn">50312 (Shannon testnet) / 5031 (mainnet)</td></tr>
+          <tr><td>RPC</td><td class="mn">https://api.infra.testnet.somnia.network</td></tr>
+          <tr><td>WS RPC</td><td class="mn">wss://api.infra.testnet.somnia.network/ws</td></tr>
+          <tr><td>Indexer (Hasura GraphQL)</td><td class="mn">https://dev.smk.somnia.host/v1/graphql</td></tr>
+          <tr><td>Price feed</td><td class="mn">https://price-feed.dev.oracle.somnia.host/v1/graphql</td></tr>
+          <tr><td>DreamDEX EC venue</td><td class="mn">operatorId 2 &middot; 0x679795a0195a1b76cdebb7c51d74e058aee92919b8c3389af86ef24535e8a28c</td></tr>
+          <tr><td>BinaryMarketsModule</td><td class="mn">0x3ecC694Cef705358864a646142ac17A90E29e388</td></tr>
+          <tr><td>OutcomeToken6909</td><td class="mn">0xB52c5934113Af5c0Bb20eb3C72290C8215f755b9</td></tr>
+          <tr><td>OracleHub</td><td class="mn">0xe40db387cC98601Dd11bd634fF2f3AD5686dE32b</td></tr>
+          <tr><td>MarketCreatorFactory</td><td class="mn">0xE6bEE93cE87c9E6e62aCb621caa7832EE47b4F6B</td></tr>
+          <tr><td>tUSDC collateral</td><td class="mn">0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E &middot; 6 decimals &middot; public faucet(uint256)</td></tr>
+          <tr><td>Reactivity precompile</td><td class="mn">0x0000000000000000000000000000000000000100 (no bytecode &mdash; eth_getCode returns 0x)</td></tr>
+          <tr><td>Binary book params (testnet)</td><td class="mn">tickSize 1000 &middot; minQuantity 1000 &middot; lotSize 1000 (raw, 6dp)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem"><strong>Traps I hit personally.</strong> The SDK skips simulation and <em>resolves successfully on a reverted receipt</em> &mdash; always check <code>receipt.status</code> or wrap in an assert. <code>expireTimestampNs</code> is mandatory and in nanoseconds; zero reverts. Float prices go off the tick grid and revert &mdash; snap to bigints. <code>loadMarkets()</code> hides settled markets; use <code>listBinaryMarkets({status:"Finalized"})</code> to find claimable positions.</p>
+  </details>
+</section>
+
+<section id="s4">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <div>
+      <h2>The market you are entering</h2>
+      <p class="sec-sub">Short-window crypto binaries are the fastest-growing format in prediction markets, and the tooling around them is threadbare.</p>
+    </div>
+  </div>
+
+  <p>Combined prediction-market volume ran near $45B in June 2026 across Kalshi and Polymarket alone. Inside that, the short-window crypto vertical is where the growth is: fast-format contracts &mdash; 5m, 15m, hourly, 4H &mdash; went from roughly 40% to <strong>over 80% of all Polymarket crypto volume</strong> between September 2025 and March 2026, with more than $4B traded on 5- and 15-minute contracts by April 2026. Limitless pioneered the always-on hourly crypto binary on Base; Kalshi runs BTC and ETH hourly and 15-minute contracts settled on CF Benchmarks; Hyperliquid's HIP-4 launched in May 2026 with a daily BTC prediction contract as its debut market.</p>
+
+  <p>So DreamDEX is not building something speculative &mdash; it is entering the hottest format in the sector with the best execution layer. What it lacks is everything <em>around</em> the format.</p>
+
+  <div class="scroller">
+    <table>
+      <caption>Documented gaps in short-window binaries &mdash; and who could close them</caption>
+      <thead><tr><th>Gap</th><th>Evidence</th><th>Addressed by</th></tr></thead>
+      <tbody>
+        <tr><td>No fair-value signal at the point of trade</td><td>Favourite-longshot bias is measurable and well documented, but it lives in academic papers &mdash; no venue shows a trader what a contract at this price has historically been worth</td><td><strong>A</strong> &middot; core thesis</td></tr>
+        <tr><td>No risk-management primitives</td><td>No short-window binary venue anywhere ships stop-loss or take-profit. Third-party hedging bolt-ons exist but are unintegrated</td><td><strong>A</strong> &middot; only possible on Somnia</td></tr>
+        <tr><td>No calibration data at short-window granularity</td><td>brier.fyi scores calibration by broad category; nothing benchmarks 15-minute BTC contracts specifically</td><td><strong>A</strong>, <strong>D</strong></td></tr>
+        <tr><td>Cold-start liquidity</td><td>All on-chain venues combined ran under 4% of Polymarket's monthly volume as of May 2026. Kalshi has a designated market-maker programme and four incentive schemes; most on-chain venues have nothing</td><td><strong>A</strong>, <strong>E</strong></td></tr>
+        <tr><td>Latency arms race locks retail out</td><td>Roughly 2% of users drive around 90% of fast-crypto volume; sub-100ms bots capture the large majority of arbitrage profit</td><td><strong>A</strong> &middot; give retail a model, not a faster wire</td></tr>
+        <tr><td>No way to verify an AI agent's claims</td><td>Real-money benchmarks tell the opposite story to the marketing: in a controlled two-month test, most frontier models <em>lost</em> money trading Kalshi and Polymarket</td><td><strong>B</strong></td></tr>
+        <tr><td>Thin mobile and social surface</td><td>Limitless is web-only. Consumer tracks at Colosseum have twice been won outright by social prediction apps &mdash; Trepa, then Capitola</td><td><strong>C</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="block note">
+    <h4>The credibility line to hold</h4>
+    <p>Do not pitch "AI that predicts Bitcoin." The rigorous evidence runs against it: ForecastBench still puts frontier models behind superforecasters, and the Prediction Arena study gave six frontier models $10,000 each to trade real prediction markets for two months &mdash; most lost between 16% and 31% of capital. The place where machines verifiably win short-window binaries is <em>microstructure and speed</em>, not foresight. A product that says "here is the model-implied fair value and here is where the book disagrees" is defensible. A product that says "our AI knows where BTC is going" gets picked apart by any judge who reads.</p>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <div>
+      <h2>What wins this particular hackathon</h2>
+      <p class="sec-sub">Rubric decode, plus the sponsor's revealed preferences.</p>
+    </div>
+  </div>
+
+  <h3>The sponsor has already told you what it values</h3>
+  <ul>
+    <li><strong>Somnia's previous hackathon judged on two axes only:</strong> "Technical Excellence &mdash; is it functional, stable, and well-implemented using the SDK" and "Real-Time UX &mdash; does it leverage the real-time feature effectively." Make the chain's speed <em>visible</em>.</li>
+    <li><strong>Bots are the trodden path.</strong> DreamDEX ships a bot kit with six event-contract strategies, has run two trading competitions, and publishes eight sanitised competition bots. It also explicitly stripped wash-trading and volume-generation tooling from those examples. Submitting another bot competes against the sponsor's own reference implementations.</li>
+    <li><strong>The call to action names four lanes:</strong> consumer-facing trading apps, AI-powered trading agents, analytics tools, social prediction products. Pick one and go deep.</li>
+    <li><strong>Past Somnia winners skew real-time and prediction-shaped:</strong> Bitredict (a prediction market that rewards accuracy), Valmira (self-serve market-making bots), Wagerverse (fully on-chain multiplayer betting), Somnia Mines. Consumer polish and real-time settlement recur.</li>
+  </ul>
+
+  <h3>What the wider hackathon record says</h3>
+  <ul>
+    <li>Consumer and social framing wins consumer tracks outright &mdash; Trepa took first in Colosseum's Consumer Track, Capitola took first in the next one; Melee Markets and Fora also placed.</li>
+    <li>Exchange-sponsored events reward <strong>AI trading copilots</strong> and <strong>autonomous capital infrastructure</strong> over dashboards. Hyperliquid's Korea hackathon was won by an AI trading copilot; Chainlink's DeFi grand prize went to an automated yield optimiser.</li>
+    <li>Judges actively test the deployed app &mdash; two incognito windows, refresh mid-flow, log out and back in. A live public URL is the baseline expectation, not a bonus.</li>
+    <li>Mock the peripheral data if you must; <strong>never mock the core action</strong>. The bet, the fill and the settlement have to be real.</li>
+    <li>Anything that only looks good with deep real liquidity looks hollow on a two-week testnet. This is the trap this venue sets.</li>
+  </ul>
+
+  <h3>Scoring weights, read as a build budget</h3>
+  <div class="scroller">
+    <table>
+      <caption>Where the marks are and how to spend effort</caption>
+      <thead><tr><th>Criterion</th><th class="num">Weight</th><th>Where it is actually won</th></tr></thead>
+      <tbody>
+        <tr><td>Technical Implementation</td><td class="num">25%</td><td>Depth of SDK use, a real on-chain component, working settlement and claim path</td></tr>
+        <tr><td>Innovation &amp; Originality</td><td class="num">20%</td><td>One idea nobody has shipped, explained in a sentence</td></tr>
+        <tr><td>User Experience &amp; Design</td><td class="num">20%</td><td>Live-updating surface, sub-second feedback, legible at a glance</td></tr>
+        <tr><td>Business &amp; Ecosystem Impact</td><td class="num">20%</td><td>Named revenue model, a story for why this brings volume to Event Contracts</td></tr>
+        <tr><td>Presentation &amp; Demo</td><td class="num">15%</td><td>A 2&ndash;3 minute video with the hook in the first fifteen seconds and a transaction hash on screen</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <div>
+      <h2>Five ideas, scored</h2>
+      <p class="sec-sub">Each scored 0&ndash;1 against the five rubric criteria and weighted. All five are buildable on testnet in two weeks.</p>
+    </div>
+  </div>
+
+  <div class="ideas">
+
+    <article class="idea pick">
+      <div class="idea-top">
+        <span class="idea-id">A</span>
+        <span class="idea-name">Nowcast &mdash; fair-value cockpit with on-chain autopilot</span>
+        <span class="idea-tag">Recommended</span>
+      </div>
+      <p>A consumer terminal for short-window contracts. It prices every live window with a digital-option model driven by the oracle tick stream, shows the gap between model and book as a single edge reading, and lets a user arm a stop-loss, take-profit, auto-roll or auto-claim that executes without them being at the screen. Its quoting engine keeps both sides of the book posted, so the book is never empty.</p>
+      <dl>
+        <dt>Lane</dt><dd>Consumer-facing trading app</dd>
+        <dt>Wedge</dt><dd>The only place in the sector that shows a retail trader what a contract is worth, and the only venue anywhere with a stop-loss on a short-window binary</dd>
+        <dt>Revenue</dt><dd>Builder fees on routed flow, plus the quoter's spread</dd>
+        <dt>Risk</dt><dd>Reactivity's ~32 SOMI/STT solvency threshold on testnet &mdash; mitigated in section 10</dd>
+      </dl>
+    </article>
+
+    <article class="idea">
+      <div class="idea-top">
+        <span class="idea-id">B</span>
+        <span class="idea-name">Proving Ground &mdash; audited agent arena</span>
+      </div>
+      <p>Agents register, publish a forecast for every window <em>before</em> it opens, and back it with real capital. A public leaderboard scores them on Brier score and calibration alongside realised P&amp;L, so skill is separated from luck. Users follow an agent with one operator approval and the agent trades on their behalf, never touching their funds. Closes the documented gap that retail has no way to verify an AI trading claim.</p>
+      <dl>
+        <dt>Lane</dt><dd>AI-powered trading agents</dd>
+        <dt>Wedge</dt><dd>Publish-then-settle scoring makes claims falsifiable; agents also generate continuous volume, which fixes cold start as a side effect</dd>
+        <dt>Revenue</dt><dd>Performance fee on followed flow, builder fees</dd>
+        <dt>Risk</dt><dd>Needs several agents running for the leaderboard to look alive; more moving parts than A</dd>
+      </dl>
+    </article>
+
+    <article class="idea">
+      <div class="idea-top">
+        <span class="idea-id">C</span>
+        <span class="idea-name">Photo Finish &mdash; head-to-head window duels</span>
+      </div>
+      <p>A mobile-first social layer. Create a room, invite friends, and every rolling window is a round: each player takes a side, positions are real on-chain contracts, and the room leaderboard updates as each window settles. Swipe to take a side, with streaks and seasons on top. Consumer-track precedent is strong &mdash; social prediction apps have won Colosseum's consumer track twice running.</p>
+      <dl>
+        <dt>Lane</dt><dd>Social prediction product</dd>
+        <dt>Wedge</dt><dd>Turns a solitary instrument into a group ritual; the 15-minute cadence is perfectly sized for a match</dd>
+        <dt>Revenue</dt><dd>Builder fees; room-creator revenue share</dd>
+        <dt>Risk</dt><dd>An empty room reads as an empty product. Needs seeded opponents or an agent house player</dd>
+      </dl>
+    </article>
+
+    <article class="idea">
+      <div class="idea-top">
+        <span class="idea-id">D</span>
+        <span class="idea-name">Settled &mdash; calibration and flow terminal</span>
+      </div>
+      <p>The research layer the category lacks: for every window ever settled, the implied probability path against the realised outcome. Calibration curves by time-to-expiry, a running measure of whether the book systematically over- or under-prices Up in the final minutes, maker-versus-taker P&amp;L, whale flow, and an exportable trade history for tax.</p>
+      <dl>
+        <dt>Lane</dt><dd>Analytics tool</dd>
+        <dt>Wedge</dt><dd>Nothing benchmarks calibration at short-window granularity anywhere in the sector</dd>
+        <dt>Revenue</dt><dd>Data API subscriptions; weak near term</dd>
+        <dt>Risk</dt><dd>"Yet another dashboard" is a named anti-pattern, and it drives no trading volume &mdash; the sponsor's actual goal</dd>
+      </dl>
+    </article>
+
+    <article class="idea">
+      <div class="idea-top">
+        <span class="idea-id">E</span>
+        <span class="idea-name">Open Windows &mdash; permissionless series launchpad</span>
+      </div>
+      <p>A few clicks to deploy your own operator, venue, market creator and self-rolling series: pick any of the 27 oracle-fed assets, pick a cadence from 1 minute up, set your own venue fee, arm the first roll. You get a hosted trading page and an embeddable widget, and you earn the venue fee on your own markets. Every launch is new Event Contract markets that would not otherwise exist.</p>
+      <dl>
+        <dt>Lane</dt><dd>Entirely new experience &middot; infrastructure</dd>
+        <dt>Wedge</dt><dd>Highest ecosystem impact of the five &mdash; it multiplies the sponsor's core metric directly, and the 2-of-27 asset gap makes the case concrete</dd>
+        <dt>Revenue</dt><dd>Fee share on every venue launched through it</dd>
+        <dt>Risk</dt><dd>Launching a market is easy; making anyone trade it is not. Highest chance of a demo that shows empty books</dd>
+      </dl>
+    </article>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <caption>Weighted scoring &mdash; 0 to 1 per criterion</caption>
+      <thead>
+        <tr>
+          <th>Idea</th>
+          <th class="num">Tech 25</th>
+          <th class="num">Innov 20</th>
+          <th class="num">UX 20</th>
+          <th class="num">Impact 20</th>
+          <th class="num">Demo 15</th>
+          <th>Weighted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A &middot; Nowcast</strong></td>
+          <td class="num">0.90</td><td class="num">0.90</td><td class="num">0.95</td><td class="num">0.80</td><td class="num">0.95</td>
+          <td><div class="scorecell"><div class="pbar hi"><i style="width:89.8%"></i></div><span>0.90</span></div></td>
+        </tr>
+        <tr>
+          <td>B &middot; Proving Ground</td>
+          <td class="num">0.85</td><td class="num">0.85</td><td class="num">0.70</td><td class="num">0.85</td><td class="num">0.70</td>
+          <td><div class="scorecell"><div class="pbar"><i style="width:79.8%"></i></div><span>0.80</span></div></td>
+        </tr>
+        <tr>
+          <td>C &middot; Photo Finish</td>
+          <td class="num">0.60</td><td class="num">0.65</td><td class="num">0.90</td><td class="num">0.75</td><td class="num">0.90</td>
+          <td><div class="scorecell"><div class="pbar"><i style="width:74.5%"></i></div><span>0.75</span></div></td>
+        </tr>
+        <tr>
+          <td>D &middot; Settled</td>
+          <td class="num">0.70</td><td class="num">0.55</td><td class="num">0.70</td><td class="num">0.50</td><td class="num">0.60</td>
+          <td><div class="scorecell"><div class="pbar lo"><i style="width:61.5%"></i></div><span>0.62</span></div></td>
+        </tr>
+        <tr>
+          <td>E &middot; Open Windows</td>
+          <td class="num">0.90</td><td class="num">0.85</td><td class="num">0.60</td><td class="num">0.95</td><td class="num">0.55</td>
+          <td><div class="scorecell"><div class="pbar"><i style="width:79.8%"></i></div><span>0.80</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Why A over B and E, which score close.</strong> B and E are both strong and both land at 0.80, but each carries a demo failure mode that A does not. B needs a populated leaderboard to feel alive; E needs someone to trade the markets it launches. A carries its own liquidity by construction &mdash; its quoter posts both sides &mdash; so it looks full on camera for the same reason it works as a product. A also lands squarely on the two axes Somnia's own judges used last time. Note that A absorbs the best parts of both: its quoter is E's market-making engine pointed inward, and its automation layer is B's operator-approval mechanism without the leaderboard overhead.</p>
+</section>
+
+<section id="s7">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <div>
+      <h2>Nowcast in full</h2>
+      <p class="sec-sub">The recommendation, specified.</p>
+    </div>
+  </div>
+
+  <h3>The insight</h3>
+  <p>Because a window settles against its own opening price, an Event Contract is exactly an <strong>at-the-money digital option</strong> struck at the open. Its fair value is the probability that the underlying finishes above the strike:</p>
+
+  <div class="block">
+    <p class="mono" style="font-size:.95rem;max-width:none;margin:0">P(Up) = &Phi;( (S &minus; K) / (&sigma;<sub>s</sub> &middot; S &middot; &radic;&tau;) )</p>
+    <p style="margin:.7rem 0 0;font-size:.9rem;color:var(--ink-3)">S = current oracle price &middot; K = the window's opening price &middot; &tau; = seconds remaining &middot; &sigma;<sub>s</sub> = per-second volatility from the tick stream &middot; &Phi; = standard normal CDF</p>
+  </div>
+
+  <p>Every input is available live. The oracle publishes a tick roughly every 1.1 seconds; &sigma;<sub>s</sub> for BTC measured at 7.03 &times; 10<sup>&minus;5</sup>. The strike is on the market record. Time remaining comes from the on-chain expiry. So the model runs at the same cadence the chain does.</p>
+
+  <p>The consequence is what makes it a product. Early in a window the fair value sits near 0.5 no matter where price is, because there is plenty of time to move. As the window closes, &radic;&tau; collapses and the same distance from strike becomes overwhelming &mdash; fair value accelerates toward 0 or 1. <strong>A trader watching only the price has no idea this is happening. The contract's value is being driven by the clock, not the chart.</strong></p>
+
+  <figure>
+    <div class="chart">
+      <svg viewBox="0 0 660 260" role="img" aria-labelledby="fvtitle">
+        <title id="fvtitle">Fair value of a 15-minute BTC contract over the life of the window, at three distances from the strike</title>
+        <g stroke="var(--rule-soft)" stroke-width="1">
+          <line x1="40" y1="10" x2="640" y2="10"/>
+          <line x1="40" y1="65" x2="640" y2="65"/>
+          <line x1="40" y1="175" x2="640" y2="175"/>
+          <line x1="40" y1="230" x2="640" y2="230"/>
+        </g>
+        <line x1="40" y1="120" x2="640" y2="120" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+        <g fill="var(--ink-3)" font-family="JetBrains Mono, monospace" font-size="10">
+          <text x="2" y="14">1.00</text><text x="2" y="69">0.75</text><text x="2" y="124">0.50</text>
+          <text x="2" y="179">0.25</text><text x="2" y="234">0.00</text>
+          <text x="40" y="252">15:00 left</text>
+          <text x="330" y="252" text-anchor="middle">5:00</text>
+          <text x="640" y="252" text-anchor="end">expiry</text>
+        </g>
+        <path d="M40,99 L106,97 L173,96 L240,94 L306,92 L373,89 L440,84 L506,77 L560,65 L600,48 L620,30 L633,12 L640,10"
+              fill="none" stroke="var(--up)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M40,120 L640,120" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M40,141 L106,143 L173,144 L240,146 L306,148 L373,151 L440,156 L506,163 L560,175 L600,192 L620,210 L633,228 L640,230"
+              fill="none" stroke="var(--down)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><b style="background:var(--up)"></b>spot $40 above the open</span>
+      <span><b style="background:var(--ink-3)"></b>spot exactly at the open</span>
+      <span><b style="background:var(--down)"></b>spot $40 below the open</span>
+    </div>
+    <figcaption>Computed from measured BTC volatility. A move of $40 &mdash; five hundredths of one percent &mdash; is worth almost nothing with fifteen minutes left, and is nearly decisive with thirty seconds left. This curve is the product.</figcaption>
+  </figure>
+
+  <h3>What the user sees</h3>
+  <ul>
+    <li><strong>The dial.</strong> One reading per market: the book's implied probability, the model's fair value, and the gap between them. Teal when the market is underpricing Up relative to the model, magenta when it is overpricing. It updates at oracle cadence, so it visibly breathes.</li>
+    <li><strong>The window ring.</strong> A countdown that also encodes decisiveness &mdash; as &tau; shrinks, the fair-value band narrows around the current reading. The clock and the price become one object.</li>
+    <li><strong>Stake, not shares.</strong> "Risk 20 tUSDC on Up" using <code>quoteBinaryStake</code>, showing contracts received, break-even probability and maximum loss before signing. Never make a retail user reason in shares at a price in (0,1).</li>
+    <li><strong>Arm an exit.</strong> Take-profit at a probability, stop-loss at a probability, auto-roll the same conviction into the next window, auto-claim everything that settles. Set once, walk away.</li>
+    <li><strong>Settlement theatre.</strong> When a window resolves, the position animates to its outcome and the redeem lands. Sub-second finality is the entire point &mdash; show it.</li>
+  </ul>
+
+  <h3>Architecture</h3>
+  <div class="two">
+    <div class="block">
+      <h4>Front end</h4>
+      <p style="font-size:.93rem">Next.js or Vite with React 18. <code>SomniaMarketsProvider</code> plus <code>useLiveMarkets</code>, <code>useLiveBinaryOrderBook</code>, <code>useLivePriceTicks</code>, <code>useLiveUserOrders</code>, <code>usePortfolio</code>. Wallet via thirdweb with <code>sponsorGas: true</code>, which is documented working on Somnia, so a first-time user never sees a gas prompt. The pricing model is a pure function running client-side on the same tick stream the chart draws from.</p>
+    </div>
+    <div class="block">
+      <h4>Pricing service</h4>
+      <p style="font-size:.93rem">A small worker keeps a rolling window of oracle ticks per asset, publishes &sigma;<sub>s</sub>, and back-tests it: for every settled window in <code>listPastBinaryMarkets</code>, replay the model and score its Brier value against the realised outcome. That number goes on the landing page. It is the difference between claiming the model works and showing it.</p>
+    </div>
+    <div class="block">
+      <h4>Automation</h4>
+      <p style="font-size:.93rem">The user signs <code>setOperatorApprovalGlobal</code> once for the three order selectors. The executor watches conditions via off-chain reactivity <code>watch()</code> &mdash; a WebSocket push with atomic <code>ethCalls</code>, zero gas, no polling &mdash; and fires <code>placeOrderFor</code> or <code>cancelOrderFor</code> when a trigger hits. A sweep redeems settled markets. The contract guarantees the executor can never move funds.</p>
+    </div>
+    <div class="block">
+      <h4>Quoter</h4>
+      <p style="font-size:.93rem"><code>mintSet</code> to create balanced Up/Down inventory, then post-only quotes a configurable spread around model fair value on both sides, requoting on each tick and always setting <code>expireTimestampNs</code> as a dead-man's switch. This is why your book is never empty &mdash; on camera, or in production.</p>
+    </div>
+  </div>
+
+  <h3>The on-chain showpiece</h3>
+  <p>If the reactivity gate in section 10 clears, deploy a <code>SomniaEventHandler</code> contract that subscribes to market resolution and redeems the user's winning positions automatically &mdash; billed to a prepaid gas allowance, with no server anywhere in the loop. That is a genuine "only possible on Somnia" moment and it directly answers the sponsor's own documented complaint that winnings are claimed rather than received. Treat it as the headline if it works and a stretch goal if it does not; the operator-key path delivers identical user-visible behaviour either way, so the product is never blocked on it.</p>
+
+  <h3>Say this in the pitch</h3>
+  <ul>
+    <li><strong>Business model:</strong> builder fees on routed flow, plus the quoter's spread. Both are protocol-sanctioned and live today.</li>
+    <li><strong>Ecosystem impact:</strong> a permanent two-sided quoter on every window is the market-maker programme this venue does not have. Retail arrives to a book that is already there.</li>
+    <li><strong>Expansion:</strong> the oracle feeds 27 assets; Event Contracts exist on 2. The same cockpit works on all of them the day they list.</li>
+  </ul>
+</section>
+
+<section id="s8">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <div>
+      <h2>Fourteen days</h2>
+      <p class="sec-sub">Skeleton end-to-end by day 4. Feature freeze on day 11. Not optional &mdash; overscoping is the most-cited cause of hackathon failure.</p>
+    </div>
+  </div>
+
+  <div class="plan">
+    <div class="day"><span class="day-label">Day 1</span><div class="day-body"><h5>Kill tests<span class="gate">gate</span></h5><p>Fund a key. Faucet tUSDC. Place one real order on a live 15m market and confirm the fill on the explorer. Try to accumulate 32 STT and call <code>subscribe()</code> on the reactivity precompile. Everything downstream depends on these two answers.</p></div></div>
+    <div class="day"><span class="day-label">Day 2&ndash;3</span><div class="day-body"><h5>Model and back-test</h5><p>Tick ingestion, &sigma; estimator, &Phi;(d) pricer. Replay it over every settled window from <code>listPastBinaryMarkets</code> and produce a Brier score. If the model does not beat a flat 0.5 prior, you learn it now, not on day 12.</p></div></div>
+    <div class="day"><span class="day-label">Day 4</span><div class="day-body"><h5>Skeleton live<span class="gate">gate</span></h5><p>Deployed URL. Connect wallet, see live markets, see the dial, place a real order, see the fill. Ugly is fine. End-to-end is not negotiable.</p></div></div>
+    <div class="day"><span class="day-label">Day 5&ndash;6</span><div class="day-body"><h5>Quoter</h5><p><code>mintSet</code> inventory and a post-only two-sided quoter around fair value. Leave it running for the rest of the hackathon so history accumulates and the book is populated whenever anyone looks.</p></div></div>
+    <div class="day"><span class="day-label">Day 7&ndash;8</span><div class="day-body"><h5>Automation</h5><p>Operator approval flow, the executor, stop-loss, take-profit, auto-roll, auto-claim. Prove each one end-to-end on a real window before moving on.</p></div></div>
+    <div class="day"><span class="day-label">Day 9&ndash;10</span><div class="day-body"><h5>Design pass</h5><p>This is 20% of the marks and the thing judges remember. The dial, the window ring, the settlement animation, mobile layout, empty states, error copy. Give it two full days.</p></div></div>
+    <div class="day"><span class="day-label">Day 11</span><div class="day-body"><h5>Own series, then freeze<span class="gate">gate</span></h5><p>Register a 60-second BTC series so the demo can show a full lap. Feature freeze. Nothing new after today.</p></div></div>
+    <div class="day"><span class="day-label">Day 12</span><div class="day-body"><h5>Hardening</h5><p>Two incognito windows. Refresh mid-flow. Disconnect and reconnect. Rotate through window rollovers. Fix whatever breaks. Judges will do exactly this.</p></div></div>
+    <div class="day"><span class="day-label">Day 13</span><div class="day-body"><h5>Video</h5><p>Script it yourself. Record the clean path, twice. Never debug on camera.</p></div></div>
+    <div class="day"><span class="day-label">Day 14</span><div class="day-body"><h5>Submit</h5><p>README with an architecture diagram, the live URL and run instructions. The SDK and documentation feedback report. Submit a day early.</p></div></div>
+  </div>
+
+  <div class="block note">
+    <p><strong>Work the sponsor's channel from day 1.</strong> Post the day-4 skeleton in the hackathon Telegram and ask a real question about the reactivity bond or the operator model on binary pools. Mentors decide discretionary prizes and remember teams who showed up early with something running. Roughly 15% of winning projects continue after the event &mdash; saying plainly that you intend to is itself a differentiator.</p>
+  </div>
+</section>
+
+<section id="s9">
+  <div class="sec-head">
+    <span class="sec-num">09</span>
+    <div>
+      <h2>The demo, shot by shot</h2>
+      <p class="sec-sub">Two minutes forty. The hook lands before the fifteen-second mark.</p>
+    </div>
+  </div>
+
+  <div class="plan">
+    <div class="day"><span class="day-label">0:00&ndash;0:15</span><div class="day-body"><h5>The hook</h5><p>A live window with 45 seconds left, spot $30 above the open. "The book says 55%. The maths says 79%. Nobody trading these can see that &mdash; so we built the instrument that shows it."</p></div></div>
+    <div class="day"><span class="day-label">0:15&ndash;0:35</span><div class="day-body"><h5>The problem</h5><p>Event Contracts are digital options struck at the window open. Their value is driven by the clock as much as the price. No venue in the sector shows a retail trader that number, and none of them offer a stop-loss.</p></div></div>
+    <div class="day"><span class="day-label">0:35&ndash;1:20</span><div class="day-body"><h5>Live trade</h5><p>Connect. Pick the live BTC 15m window. Show the dial breathing at oracle cadence. Stake 20 tUSDC on Up &mdash; contracts, break-even and max loss on screen before signing. Fill lands. Put the transaction hash on screen and cut to the explorer for one second.</p></div></div>
+    <div class="day"><span class="day-label">1:20&ndash;1:50</span><div class="day-body"><h5>Arm the autopilot</h5><p>Set take-profit at 0.85 and stop-loss at 0.30. One approval signature, stated plainly: the executor can place and cancel orders that settle to you, and can never move your funds. Close the tab. The exit still fires.</p></div></div>
+    <div class="day"><span class="day-label">1:50&ndash;2:20</span><div class="day-body"><h5>A full lap</h5><p>Switch to the 60-second series. Open, price, fill, expiry, settlement, auto-claim &mdash; the whole life of a contract in one unbroken minute. This shot only works on a chain with 88-millisecond blocks, and it is the shot that wins the real-time UX mark.</p></div></div>
+    <div class="day"><span class="day-label">2:20&ndash;2:40</span><div class="day-body"><h5>Close</h5><p>Back-tested Brier score on screen. Builder fees as the revenue line. Twenty-seven oracle assets, two with markets. "Every window on DreamDEX now opens with a live book, because we quote it."</p></div></div>
+  </div>
+</section>
+
+<section id="s10">
+  <div class="sec-head">
+    <span class="sec-num">10</span>
+    <div>
+      <h2>Risks, and what to do about each</h2>
+      <p class="sec-sub">Every one of these is testable on day 1 or 2.</p>
+    </div>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <caption>Risk register</caption>
+      <thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Reactivity requires roughly 32 SOMI in the owner account at <code>subscribe()</code></strong> &mdash; a solvency check, not an escrow. The public faucet dispenses about 0.5 STT per claim</td>
+          <td>High</td>
+          <td>Test on day 1. Ask in the hackathon Telegram for a dev-sized STT grant &mdash; they offer test tokens on request. If it does not clear, the operator-key executor gives identical user-visible behaviour and the on-chain handler becomes a stretch goal rather than a dependency.</td>
+        </tr>
+        <tr>
+          <td>Handlers are <strong>not same-transaction</strong> &mdash; they run as deferred synthetic transactions and can be pushed to the next block or evicted under load</td>
+          <td>Medium</td>
+          <td>Never write logic that assumes same-block ordering. For a stop-loss on a 15-minute window this is irrelevant; for a 60-second series, quote the latency honestly.</td>
+        </tr>
+        <tr>
+          <td>Thin books mean a real user could get a poor fill, or none</td>
+          <td>Medium</td>
+          <td>Your own quoter is the answer, and it is a feature rather than a workaround. Disclose it plainly in the README &mdash; a judge who discovers an undisclosed house maker will treat it as dishonesty.</td>
+        </tr>
+        <tr>
+          <td>A window <strong>voids</strong> mid-demo and pays 0.5/0.5 instead of resolving</td>
+          <td>Medium</td>
+          <td>400 of 400 recent windows resolved cleanly, so it is unlikely &mdash; but never make the video depend on one live window. Record the settlement lap separately and keep a clean backup take.</td>
+        </tr>
+        <tr>
+          <td>The SDK <strong>resolves successfully on a reverted receipt</strong> &mdash; it skips simulation and never checks status</td>
+          <td>High</td>
+          <td>Wrap every write in an assertion on <code>receipt.status</code>. This has silently broken other people's bots; the bot kit ships a helper specifically for it.</td>
+        </tr>
+        <tr>
+          <td>Pool addresses recycle across windows</td>
+          <td>High</td>
+          <td>Key all state by <code>marketId</code>. Reset position state whenever the current symbol changes.</td>
+        </tr>
+        <tr>
+          <td>Doc and RPC drift &mdash; several documented URLs 404, and two different "official" RPC hosts are in circulation</td>
+          <td>Low</td>
+          <td>Use the endpoints in the verified-constants table; they came from the bot kit's own config and I confirmed each responds. Keep Ankr or PublicNode as a fallback.</td>
+        </tr>
+        <tr>
+          <td>The model turns out no better than a flat 0.5 prior</td>
+          <td>Low</td>
+          <td>You find out on day 3 from the back-test, with eleven days left. Even then the product stands: an honest calibration readout is more than any competitor ships, and the automation layer is independent of the model.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>Sources: DreamDEX developer documentation and the <code>dreamdex-bot-kit</code> repository; <code>@somnia-chain/markets-sdk</code> 0.28.1 and <code>@somnia-chain/reactivity</code> 0.2.1 type definitions read directly; Somnia developer documentation; live queries against the Shannon testnet indexer, RPC and price-feed oracle on 23 August 2026; published hackathon results from Colosseum, ETHGlobal, Chainlink and Somnia; and prediction-market volume and benchmark reporting from Pew Research, CNBC, Kalshi, Polymarket, ForecastBench and the Prediction Arena study.</p>
+  <p>Figures measured on testnet are point-in-time and will drift. Re-verify before hardcoding.</p>
+</footer>
+
+</div>
