@@ -23,9 +23,11 @@ const TYPES = {
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   let path = url.pathname === "/" ? "/web/index.html" : url.pathname;
-  // Only ever serve out of the repo, and only the two directories the console needs.
+  // Only ever serve out of the repo, and only the directories the console needs.
+  // `contracts/out` is here because the Deploy step sends real creation bytecode
+  // from the browser, and that bytecode lives in the Foundry build artifact.
   const resolved = normalize(join(ROOT, path));
-  if (!resolved.startsWith(ROOT) || !/^(web|worker|deployments)\//.test(resolved.slice(ROOT.length))) {
+  if (!resolved.startsWith(ROOT) || !/^(web|worker|deployments|contracts\/out)\//.test(resolved.slice(ROOT.length))) {
     res.writeHead(403).end("forbidden");
     return;
   }
